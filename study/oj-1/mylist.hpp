@@ -6,14 +6,14 @@ class MyList {
     // 节点结构体
     struct Node {
         int value;
-        Node* next;
-        Node(int v) : value(v), next(nullptr) {}
+        Node* next{};
+        explicit Node(int v) : value(v),  {}
     };
 
     Node* head;
     int list_size;
     // 辅助函数
-    Node* getNodeAt(int index) const;
+    [[nodiscard]] Node* getNodeAt(int index) const;
 
    public:
     MyList();
