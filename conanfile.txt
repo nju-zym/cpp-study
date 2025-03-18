@@ -1,7 +1,8 @@
 [layout]
-cmake_layout
+cmake_layout           # 指定项目使用 CMake 标准布局，Conan 会按照 CMake 的目录结构组织文件
 
-[requires]
+[requires]             # 此部分用于列出项目依赖的第三方库
+                       # 目前为空，可以添加如 boost/1.78.0、fmt/9.1.0 等依赖
 
 [generators]
-CMakeDeps
+CMakeDeps              # 生成 CMake 配置文件，使 CMake 能找到和使用 Conan 安装的依赖库
