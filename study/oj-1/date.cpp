@@ -1,7 +1,6 @@
 #include "date.hpp"
 
 #include <iostream>
-#include <memory>
 using namespace std;
 
 // 构造函数
@@ -16,19 +15,13 @@ bool Date::isValidDate() const {
     //TODO
     //这个函数需要被其他函数使用
     //未到日期也属于正常输入
-    if (year < 1 || month < 1 || month > 12 || day < 1 || day > daysInMonth(month, year)) {
-        return false;
-    }
-    return true;
+    return year >= 1 && month >= 1 && month <= 12 && day >= 1 && day <= daysInMonth(month, year);
 }
 
 // 判断是否是闰年
 bool Date::isLeapYear(int y) const {
     //TODO
-    if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) {
-        return true;
-    }
-    return false;
+    return (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
 }
 
 // 返回该月的天数
@@ -82,7 +75,7 @@ void Date::display() const {
     //
     //如：cout<<2025-02-17<<endl;
     if (!isValidDate()) {
-        cout << -1 << endl;
+        cout << -1 << '\n';
         return;
     }
     if (year < 10) {
@@ -100,15 +93,20 @@ void Date::display() const {
         cout << month << "-";
     }
     if (day < 10) {
-        cout << "0" << day << endl;
+        cout << "0" << day << '\n';
     } else {
-        cout << day << endl;
+        cout << day << '\n';
     }
     //如果非法，输出-1
 }
 
 int main() {
-    int y1, m1, d1, y2, m2, d2;
+    int y1 = 0;
+    int m1 = 0;
+    int d1 = 0;
+    int y2 = 0;
+    int m2 = 0;
+    int d2 = 0;
     // 输入第一个日期
     cin >> y1 >> m1 >> d1;
     // 输入第二个日期
@@ -121,6 +119,6 @@ int main() {
     date2.display();
     // 计算并输出日期差
     int diff = date1.calculateDaysBetween(date2);
-    cout << diff << endl;
+    cout << diff << '\n';
     return 0;
 }
