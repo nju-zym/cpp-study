@@ -29,4 +29,4 @@ add_program_options(
 )
 
 # -----------------------------------------------------------------------------------------------------------------------
-add_program(hello hello.cpp INCLUDES hello.h)
+add_program(hello test/source/hello.cpp INCLUDES test/head)

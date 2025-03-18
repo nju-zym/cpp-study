@@ -41,14 +41,38 @@ function(add_program name)
 
     cmake_parse_arguments(args "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
+    # 处理源文件路径，将相对路径转换为绝对路径
+    set(sources)
+
+    foreach(src ${args_UNPARSED_ARGUMENTS})
+        if(NOT IS_ABSOLUTE ${src})
+            get_filename_component(abs_src "${src}" ABSOLUTE BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+            list(APPEND sources ${abs_src})
+        else()
+            list(APPEND sources ${src})
+        endif()
+    endforeach()
+
+    # 处理头文件路径，将相对路径转换为绝对路径
+    set(includes)
+
+    foreach(inc ${args_INCLUDES})
+        if(NOT IS_ABSOLUTE ${inc})
+            get_filename_component(abs_inc "${inc}" ABSOLUTE BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+            list(APPEND includes ${abs_inc})
+        else()
+            list(APPEND includes ${inc})
+        endif()
+    endforeach()
+
     add_executable(${name})
     target_sources(${name}
         PRIVATE
-        ${args_UNPARSED_ARGUMENTS}
+        ${sources}
     )
     target_include_directories(${name}
         PRIVATE
-        ${args_INCLUDES}
+        ${includes}
     )
     target_link_libraries(${name}
         PRIVATE
