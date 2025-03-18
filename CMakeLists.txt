@@ -25,9 +25,9 @@ include(add_program)
 # INCLUDES - 头文件路径
 # 例如:
 # add_program_options(
-#     DEPENDENCIES  # 依赖项
-#     LIBRARIES     # 需要链接的库
-#     INCLUDES      # 头文件路径
+# DEPENDENCIES  # 依赖项
+# LIBRARIES     # 需要链接的库
+# INCLUDES      # 头文件路径
 # )
 # -----------------------------------------------------------------------------------------------------------------------
 add_program_options(
@@ -42,3 +42,4 @@ add_program_options(
 # -----------------------------------------------------------------------------------------------------------------------
 add_program(hello test/hello.cpp)
 add_program(date study/oj-1/date.cpp)
+add_program(mylist study/oj-1/mylist.cpp)
