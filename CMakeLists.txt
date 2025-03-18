@@ -29,4 +29,5 @@ add_program_options(
 )
 
 # -----------------------------------------------------------------------------------------------------------------------
-add_program(hello test/source/hello.cpp INCLUDES test/head)
+add_program(hello test/hello.cpp)
+add_program(date study/oj-1/date.cpp)
