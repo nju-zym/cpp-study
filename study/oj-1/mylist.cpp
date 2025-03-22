@@ -175,19 +175,19 @@ void MyList::merge(MyList& other) {
 
 //可以用这个main函数本地测试！或者修改内容~
 //提交时候务必注释哦~
-int main(){
-  MyList L;
-  L.insert (0, 10);
-  L.insert (1, 20);
-  L.insert (2, 30);
-  cout<<L.get(0)<<endl;
-  cout<<L.get(1)<<endl;
-  L.set (1, 25);
-  cout<<L.get(1)<<endl;
-  cout<<L.size()<<endl;
-  L.remove (1);
-  cout<<L.get(1)<<endl;
-  cout<<L.sum_from (0, 2)<<endl;
-  L.reverse();
-  cout<<L.get(0)<<endl;
+int main() {
+    MyList L;
+    L.insert(0, 10);
+    L.insert(1, 20);
+    L.insert(2, 30);
+    cout << L.get(0) << endl;
+    cout << L.get(1) << endl;
+    L.set(1, 25);
+    cout << L.get(1) << endl;
+    cout << L.size() << endl;
+    L.remove(1);
+    cout << L.get(1) << endl;
+    cout << L.sum_from(0, 2) << endl;
+    L.reverse();
+    cout << L.get(0) << endl;
 }

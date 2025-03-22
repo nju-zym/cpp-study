@@ -43,3 +43,6 @@ add_program_options(
 add_program(hello test/hello.cpp)
 add_program(date study/oj-1/date.cpp)
 add_program(mylist study/oj-1/mylist.cpp)
+add_program(a study/hcy/a.cpp)
+add_program(b study/hcy/b.cpp)
+add_program(c study/hcy/c.cpp)
