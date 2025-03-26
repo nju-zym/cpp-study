@@ -25,7 +25,7 @@ Heap::~Heap() {
     head = nullptr;
 }
 MM_Struct* Heap::Malloc(size_t requested_size) {
-    size_t units_needed = (requested_size + 3) / 4;  // 向上取整确保有足够空间
+    size_t units_needed = (requested_size + 3) / 4;
 
     while (true) {
         MM_Struct* start   = nullptr;
@@ -181,17 +181,29 @@ void Heap::output(MM_Struct* p) {
         std::cout << p->val << std::endl;
     }
 }
-
-int main() {
+// check the expanding of the Heap and some corner cases of Free method;
+static void test2() {
     Heap* heap = new Heap(12);
     std::cout << heap->GetTotalSize() << std::endl;
-    MM_Struct* p = heap->Malloc(12);
-    std::cout << heap->GetTotalSize() << std::endl;
+    MM_Struct* p = heap->Malloc(8);
     MM_Struct* q = heap->Malloc(4);
     heap->Free(q);
-    std::cout << heap->GetTotalSize() << std::endl;
     heap->Free(q);
-    std::cout << heap->GetTotalSize() << std::endl;
-
+    heap->Free(p->nxt);
+    std::cout << heap->GetTotalSize() << '\n';
+    q = heap->Malloc(4);
+    std::cout << heap->GetTotalSize() << '\n';
+    q = heap->Malloc(4);
+    std::cout << heap->GetTotalSize() << '\n';
     delete heap;
+
+    heap = new Heap(12);
+    p    = heap->Malloc(12);
+    heap->Free(p);
+    std::cout << heap->GetTotalSize() << '\n';
+    delete heap;
+}
+int main() {
+    test2();
+    return 0;
 }
