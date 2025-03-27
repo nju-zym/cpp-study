@@ -1,187 +1,185 @@
-#include "heap.hpp"
+#include"heap.hpp"
 
-#include <iostream>
+#include"MM.hpp"
+
+#include<cstddef>
+#include<iostream>
+
+using std::cout;
 
 Heap::Heap(size_t _size) {
-    size = _size;
-    head = new MM_Struct[size / 4];
-    for (size_t i = 0; i < (size / 4); i++) {
-        head[i].locked = false;
-        head[i].size   = 0;
-        head[i].val    = 0;
+    //TODO
+    if (_size < 4) {
+        return;
     }
-
-    for (size_t i = 0; i < (size / 4) - 1; i++) {
-        head[i].nxt = &head[i + 1];
+    Heap::size = _size;
+    Heap::head = new MM_Struct();
+    for (int i = 1; i < _size / 4; i++) {
+        MM_Struct* temp = new MM_Struct();
+        temp->nxt       = Heap::head;
+        Heap::head      = temp;
     }
-    head[(size / 4) - 1].nxt = nullptr;
 }
-
 Heap::~Heap() {
-    if (head != nullptr) {
-        delete[] head;
+    //TODO
+    MM_Struct* temp = head;
+    while (temp != nullptr) {
+        MM_Struct* next = temp->nxt;
+        delete temp;
+        temp = next;
     }
-    size = 0;
     head = nullptr;
 }
-MM_Struct* Heap::Malloc(size_t requested_size) {
-    size_t units_needed = (requested_size + 3) / 4;
-
+void Heap::dilatation() {
+    //TODO
+    MM_Struct* temp = Heap::head;
+    while (temp->nxt != nullptr) {
+        temp = temp->nxt;
+    }
+    size_t old_size = Heap::size;
+    Heap::size *= 2;
+    for (int i = 0; i < old_size / 4; i++) {
+        MM_Struct* next = new MM_Struct();
+        temp->nxt       = next;
+        temp            = next;
+    }
+}
+MM_Struct* Heap::Malloc(size_t target_size) {
+    //TODO
+    int targrt = target_size / 4;
+    MM_Struct* begin   = head;
+    MM_Struct* check   = nullptr;
     while (true) {
-        MM_Struct* start   = nullptr;
-        MM_Struct* current = head;
-        MM_Struct* prev    = nullptr;
-        MM_Struct* last    = nullptr;
-
-        while (current != nullptr) {
-            if (current->nxt == nullptr) {
-                last = current;
-            }
-            if (current->locked) {
-                prev    = current;
-                current = current->nxt;
+        while (begin != nullptr) {
+            if (begin->locked == true) {
+                begin = begin->nxt;
                 continue;
             }
-            size_t count    = 0;
-            MM_Struct* temp = current;
-            while (temp != nullptr && !temp->locked && count < units_needed) {
-                count++;
-                temp = temp->nxt;
+            check = begin;
+            for (int i = 1; i < targrt; i++) {
+                if (check->nxt == nullptr || check->locked == true) {
+                    begin = check->nxt;
+                    check   = nullptr;
+                    break;
+                }
+                check = check->nxt;
             }
-            if (count >= units_needed) {
-                start = current;
-                break;
+            if (check != nullptr) {
+                begin->size     = target_size;
+                MM_Struct* temp = begin;
+                for (int i = 1; i <= targrt; i++) {
+                    temp->locked = true;
+                    temp         = temp->nxt;
+                }
+                return begin;
             }
-            prev    = current;
-            current = current->nxt;
+            begin = begin->nxt;
         }
-        if (start != nullptr) {
-            start->locked   = true;
-            start->size     = requested_size;
-            MM_Struct* temp = start->nxt;
-            for (size_t i = 1; i < units_needed; i++) {
-                temp->locked = true;
-                temp->size   = 0;
-                temp         = temp->nxt;
-            }
-            return start;
-        }
-        size_t old_size       = size;
-        size                 *= 2;
-        MM_Struct* new_units  = new MM_Struct[size / 4 - old_size / 4];  // 只分配新增的部分
-
-        for (size_t i = 0; i < (size / 4 - old_size / 4); i++) {
-            new_units[i].locked = false;
-            new_units[i].size   = 0;
-            new_units[i].val    = 0;
-        }
-
-        for (size_t i = 0; i < (size / 4 - old_size / 4) - 1; i++) {
-            new_units[i].nxt    = &new_units[i + 1];
-            new_units[i].locked = false;
-        }
-        new_units[(size / 4 - old_size / 4) - 1].nxt    = nullptr;
-        new_units[(size / 4 - old_size / 4) - 1].locked = false;
-
-        if (last == nullptr) {
-            head = new_units;
-        } else {
-            last->nxt = &new_units[0];
-        }
+        dilatation();
+        begin = head;
+        check  = nullptr;
     }
 }
 void Heap::Free(MM_Struct* p) {
-    if (p == nullptr || !p->locked) {
-        std::cout << "Segmentation Fault!\n";
+    //TODO
+    if (p == nullptr) {
+        cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->size == 0) {
-        std::cout << "Error Free!\n";
+    if (p->locked == false) {
+        cout << "Segmentation Fault!\n";
         return;
     }
+    if (p->size == 0 && p->locked == true) {
+        cout << "Error Free!\n";
+        return;
+    }
+    if (p == head){
+        MM_Struct* p_end = p;
+        int length = p->size / 4;
+        for (int i = 1; i < length; i++) {
+            p_end = p_end->nxt;
+            p_end->locked = false;
+            p_end->val = 0;
+        }
+        p->locked = false;
+        p->val = 0;
+        p->size = 0;
+        
+        if (p_end->nxt == nullptr) {
+            return;
+        }
 
-    size_t units_to_free = (p->size + 3) / 4;
-
-    MM_Struct* start = p;
-    MM_Struct* end   = p;
-    for (size_t i = 1; i < units_to_free && end->nxt != nullptr; i++) {
+        head = p_end->nxt;
+        MM_Struct* end = head;
+        while (end->nxt != nullptr) {
+            end = end->nxt;
+        }
+        end->nxt = p;
+        p_end->nxt = nullptr;
+        return;
+    }
+    MM_Struct* pre = head;
+    while (pre->nxt != nullptr && pre->nxt != p) {
+        pre = pre->nxt;
+    }
+    MM_Struct* p_end  = p;
+    int length = p->size / 4;
+    for (int i = 1; i < length; i++) {
+        p_end = p_end->nxt;
+        p_end->locked = false;
+        p_end->val = 0;
+    }
+    p->locked = false;
+    p->val = 0;
+    p->size = 0;
+    if (p_end->nxt == nullptr) {
+        return;
+    }
+    pre->nxt = p_end->nxt;
+    MM_Struct* end = head;
+    while (end->nxt != nullptr){
         end = end->nxt;
     }
-    MM_Struct* after_end = end->nxt;
-
-    bool contains_last = false;
-    if (after_end == nullptr) {
-        contains_last = true;
-    }
-
-    MM_Struct* prev = nullptr;
-    MM_Struct* curr = head;
-    while (curr != nullptr && curr != p) {
-        prev = curr;
-        curr = curr->nxt;
-    }
-
-    curr = start;
-    while (curr != after_end) {
-        curr->locked = false;
-        curr->val    = 0;
-        curr->size   = 0;
-        curr         = curr->nxt;
-    }
-
-    if (!contains_last) {
-        if (prev != nullptr) {
-            prev->nxt = after_end;
-        } else {
-            head = after_end;
-        }
-
-        MM_Struct* last = head;
-        while (last != nullptr && last->nxt != nullptr) {
-            last = last->nxt;
-        }
-
-        if (last != nullptr) {
-            last->nxt = start;
-            end->nxt  = nullptr;
-        } else {
-            head     = start;
-            end->nxt = nullptr;
-        }
-    } else if (prev != nullptr) {
-        prev->nxt = start;
-    }
+    end->nxt = p;
+    p_end->nxt = nullptr;
 }
-void Heap::setval(MM_Struct* p, int val) {
-    if (p == nullptr || !p->locked) {
-        std::cout << "Segmentation Fault!\n";
-        return;
-    }
 
-    p->val = val;
-}
+
 void Heap::output(MM_Struct* p) {
-    if (p == nullptr || !p->locked) {
-        std::cout << "Segmentation Fault!\n";
+    //TODO
+    if (p == nullptr) {
+        cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->size > 0) {
-        size_t units    = p->size / 4;
-        MM_Struct* curr = p;
-
-        for (size_t i = 0; i < units; i++) {
-            std::cout << curr->val;
-            if (i < units - 1) {
-                std::cout << " ";
-            }
-            curr = curr->nxt;
+    if (p->locked == false) {
+        cout << "Segmentation Fault!\n";
+        return;
+    }
+    if (p->size != 0){
+        int length = p->size / 4;
+        MM_Struct* temp = p;
+        for (int i = 0; i < length; i++) {
+            cout << temp->val << ' ';
+            temp = temp->nxt;
         }
-        std::cout << std::endl;
-    } else {
-        std::cout << p->val << std::endl;
+        cout << '\n';
+    }
+    else {
+        cout << p->val << '\n';
     }
 }
-// check the expanding of the Heap and some corner cases of Free method;
+void Heap::setval(MM_Struct* p, int x) {
+    //TODO
+    if (p == nullptr) {
+        cout << "Segmentation Fault!\n";
+        return;
+    }
+    if (p->locked == false) {
+        cout << "Segmentation Fault!\n";
+        return;
+    }
+    p->val = x;}
 static void test2() {
     Heap* heap = new Heap(12);
     std::cout << heap->GetTotalSize() << std::endl;
@@ -203,7 +201,14 @@ static void test2() {
     std::cout << heap->GetTotalSize() << '\n';
     delete heap;
 }
-int main() {
-    test2();
-    return 0;
+int main(){
+    Heap* heap   = new Heap(12);
+    MM_Struct* p = heap->Malloc(12);
+    heap->setval(p, 1);
+    heap->setval(p->nxt, 2);
+    heap->setval(p->nxt->nxt, 3);
+    heap->output(p);
+    heap->output(p->nxt);
+    heap->output(nullptr);
+    delete heap;
 }

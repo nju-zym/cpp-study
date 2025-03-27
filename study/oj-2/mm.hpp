@@ -14,7 +14,7 @@ struct MM_Struct {
         size   = 0;
     }
     ~MM_Struct() {
-        std:: cout <<"Deleting MM_Struct!\n";
+        std:: cout << "Deleting MM_Struct!\n";
     }
 };
 #endif
