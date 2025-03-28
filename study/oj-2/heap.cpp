@@ -2,7 +2,6 @@
 
 #include"MM.hpp"
 
-#include<cstddef>
 #include<iostream>
 
 using std::cout;
@@ -86,11 +85,11 @@ void Heap::Free(MM_Struct* p) {
         cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->locked == false) {
+    if (!p->locked) {
         cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->size == 0 && p->locked == true) {
+    if (p->size == 0 && p->locked) {
         cout << "Error Free!\n";
         return;
     }
@@ -152,7 +151,7 @@ void Heap::output(MM_Struct* p) {
         cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->locked == false) {
+    if (!p->locked) {
         cout << "Segmentation Fault!\n";
         return;
     }
@@ -175,11 +174,12 @@ void Heap::setval(MM_Struct* p, int x) {
         cout << "Segmentation Fault!\n";
         return;
     }
-    if (p->locked == false) {
+    if (!p->locked) {
         cout << "Segmentation Fault!\n";
         return;
     }
-    p->val = x;}
+    p->val = x;
+}
 static void test2() {
     Heap* heap = new Heap(12);
     std::cout << heap->GetTotalSize() << std::endl;
@@ -204,9 +204,7 @@ static void test2() {
 int main(){
     Heap* heap   = new Heap(12);
     MM_Struct* p = heap->Malloc(12);
-    heap->setval(p, 1);
-    heap->setval(p->nxt, 2);
-    heap->setval(p->nxt->nxt, 3);
+    
     heap->output(p);
     heap->output(p->nxt);
     heap->output(nullptr);

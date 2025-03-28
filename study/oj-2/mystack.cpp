@@ -1,5 +1,5 @@
 // MyStack.cpp
-#include "MyStack.hpp"
+#include "mystack.hpp"
 
 using namespace std;
 
