@@ -1,5 +1,5 @@
-#include <bitset>      // Required for std::bitset
-#include <functional>  // Required for std::hash<std::bitset>
+#include <bitset>  // Required for std::bitset
+#include <chrono>  // 添加 chrono 头文件用于计时
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -92,24 +92,26 @@ CountType countWaysRecursive(int current, int n, BlockedMask blockedMask) {
 }
 
 int main() {
-    int n;  // Input: Total number of stairs
+    int n = 0;  // Input: Total number of stairs
     std::cout << "Enter the total number of stairs (n): ";
     std::cin >> n;
 
     // Basic input validation
     if (n <= 0) {
-        std::cout << "Number of ways: 0" << std::endl;
+        std::cout << "Number of ways: 0" << '\n';
         return 0;
     }
 
     // Check if the input n exceeds the compiled maximum MAX_N.
     if (n > MAX_N) {
-        std::cerr << "Error: Input n=" << n << " exceeds the maximum supported value MAX_N=" << MAX_N << "."
-                  << std::endl;
-        std::cerr << "Please increase MAX_N in the source code and recompile if necessary." << std::endl;
-        std::cerr << "Be aware of the exponential time complexity which limits practical values of n." << std::endl;
+        std::cerr << "Error: Input n=" << n << " exceeds the maximum supported value MAX_N=" << MAX_N << "." << '\n';
+        std::cerr << "Please increase MAX_N in the source code and recompile if necessary." << '\n';
+        std::cerr << "Be aware of the exponential time complexity which limits practical values of n." << '\n';
         return 1;  // Indicate error
     }
+
+    // 开始计时
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     // Resize the memoization table to accommodate indices 0 to n.
     memo.resize(n + 1);
@@ -120,8 +122,20 @@ int main() {
     // Start the recursive calculation.
     CountType result = countWaysRecursive(0, n, initialMask);
 
+    // 结束计时
+    auto endTime = std::chrono::high_resolution_clock::now();
+
+    // 计算耗时（毫秒）
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+
     // Output the final result.
-    std::cout << "Number of ways to reach stair " << n << ": " << result << std::endl;
+    std::cout << "Number of ways to reach stair " << n << ": " << result << '\n';
+
+    // 打印运行时间
+    std::cout << "算法运行时间: " << duration << " 毫秒" << '\n';
+    if (duration > 1000) {
+        std::cout << "              " << (duration / 1000.0) << " 秒" << '\n';
+    }
 
     return 0;
 }
