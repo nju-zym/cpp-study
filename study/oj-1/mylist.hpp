@@ -6,8 +6,10 @@ class MyList {
     // 节点结构体
     struct Node {
         int value;
-        Node* next{};
-        explicit Node(int v) : value(v),  {}
+        Node* next;
+
+        // 添加构造函数
+        Node(int val) : value(val), next(nullptr) {}
     };
 
     Node* head;

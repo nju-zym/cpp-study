@@ -47,7 +47,7 @@ class UnionFind {
         }
         return true;
     }
-}
+};
 
 // 计算 (a^b) % mod，适用于大数幂
 ll pow_mod(ll a, ll b, ll mod) {
